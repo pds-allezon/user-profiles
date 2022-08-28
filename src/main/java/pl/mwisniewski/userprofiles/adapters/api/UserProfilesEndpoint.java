@@ -36,10 +36,7 @@ public class UserProfilesEndpoint {
         String startTimeRange = splitTimeRange[0] + DEFAULT_TIMEZONE_SUFFIX;
         String endTimeRange = splitTimeRange[1] + DEFAULT_TIMEZONE_SUFFIX;
 
-        return new TimeRange(
-                ZonedDateTime.parse(startTimeRange).toInstant().toEpochMilli(),
-                ZonedDateTime.parse(endTimeRange).toInstant().toEpochMilli()
-        );
+        return new TimeRange(startTimeRange, endTimeRange);
     }
 
     private static final String DEFAULT_TIMEZONE_SUFFIX = "Z";
