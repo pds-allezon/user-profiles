@@ -16,6 +16,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.data:spring-data-redis:2.7.2'
     implementation 'redis.clients:jedis:3.8.0'
+    implementation 'org.springframework.kafka:spring-kafka:2.9.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -1,5 +1,7 @@
 package pl.mwisniewski.userprofiles.adapters.redis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -9,6 +11,7 @@ import pl.mwisniewski.userprofiles.domain.model.UserProfile;
 import pl.mwisniewski.userprofiles.domain.model.UserTag;
 import pl.mwisniewski.userprofiles.domain.port.UserProfileProvider;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Repository
@@ -28,8 +31,11 @@ public class RedisUserProfileRepository implements UserProfileProvider {
         String viewKey = makeKey(cookie, Action.VIEW.toString());
 
         // TODO: can be optimized with pipelining.
-        List<RedisUserTag> buyUserTags = template.opsForList().range(buyKey, 0, limit - 1);
-        List<RedisUserTag> viewUserTags = template.opsForList().range(viewKey, 0, limit - 1);
+        List<RedisUserTag> buyUserTags = template.opsForList().range(buyKey, 0, -1);
+        List<RedisUserTag> viewUserTags = template.opsForList().range(viewKey, 0, -1);
+
+        buyUserTags = filterAndSort(buyUserTags, timeRange, limit);
+        viewUserTags = filterAndSort(viewUserTags, timeRange, limit);
 
         return new UserProfile(
                 cookie,
@@ -40,6 +46,8 @@ public class RedisUserProfileRepository implements UserProfileProvider {
 
     @Override
     public void addUserTag(UserTag userTag) {
+        logger.info("Adding user tag to redis: {}", userTag);
+
         String key = makeKey(userTag.cookie(), userTag.action().toString());
         template.opsForList().leftPush(key, RedisUserTag.of(userTag));
         template.opsForList().trim(key, 0, MAX_USER_TAGS_NUMBER - 1);
@@ -48,4 +56,16 @@ public class RedisUserProfileRepository implements UserProfileProvider {
     private String makeKey(String cookie, String action) {
         return "%s-%s".formatted(cookie, action);
     }
+
+    private List<RedisUserTag> filterAndSort(List<RedisUserTag> userTagList, TimeRange timeRange, int limit) {
+        return userTagList.stream()
+                .filter(it ->
+                        it.time().compareTo(timeRange.startTime()) >= 0 && it.time().compareTo(timeRange.endTime()) < 0
+                )
+                .sorted(Comparator.comparing(RedisUserTag::time).reversed())
+                .limit(limit)
+                .toList();
+    }
+
+    private final Logger logger = LoggerFactory.getLogger(RedisUserProfileRepository.class);
 }

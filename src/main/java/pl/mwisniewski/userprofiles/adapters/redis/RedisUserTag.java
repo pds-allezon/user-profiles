@@ -7,6 +7,8 @@ import pl.mwisniewski.userprofiles.domain.model.Device;
 import pl.mwisniewski.userprofiles.domain.model.ProductInfo;
 import pl.mwisniewski.userprofiles.domain.model.UserTag;
 
+import java.io.Serializable;
+
 @RedisHash("RedisUserTag")
 public record RedisUserTag(
         @Id
@@ -20,7 +22,7 @@ public record RedisUserTag(
         String brandId,
         String categoryId,
         int price
-) {
+) implements Serializable {
     public static RedisUserTag of(UserTag userTag) {
         return new RedisUserTag(
                 userTag.cookie(),
