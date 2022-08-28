@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import pl.mwisniewski.userprofiles.adapters.api.ProductInfoResponse;
 import pl.mwisniewski.userprofiles.adapters.api.UserProfileResponse;
 import pl.mwisniewski.userprofiles.adapters.api.UserProfilesEndpoint;
@@ -12,6 +13,7 @@ import pl.mwisniewski.userprofiles.adapters.api.UserTagResponse;
 import java.util.List;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class UserProfilesApplicationTests {
 
     @Autowired

@@ -3,6 +3,7 @@ package pl.mwisniewski.userprofiles.domain;
 import org.springframework.stereotype.Component;
 import pl.mwisniewski.userprofiles.domain.model.TimeRange;
 import pl.mwisniewski.userprofiles.domain.model.UserProfile;
+import pl.mwisniewski.userprofiles.domain.model.UserTag;
 import pl.mwisniewski.userprofiles.domain.port.UserProfileProvider;
 
 @Component
@@ -16,5 +17,9 @@ public class UserProfileService {
 
     public UserProfile getProfile(String cookie, TimeRange timeRange, int limit) {
         return userProfileProvider.getProfile(cookie, timeRange, limit);
+    }
+
+    public void addUserTag(UserTag userTag) {
+        userProfileProvider.addUserTag(userTag);
     }
 }
