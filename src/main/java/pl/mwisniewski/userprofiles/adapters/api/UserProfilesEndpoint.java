@@ -21,14 +21,14 @@ public class UserProfilesEndpoint {
     public ResponseEntity<UserProfileResponse> userProfiles(
             @PathVariable String cookie,
             @RequestParam("time_range") String timeRangeStr,
-            @RequestParam(value = "limit", required = false) int limit,
+            @RequestParam(value = "limit", required = false, defaultValue = "200") int limit,
             @RequestBody(required = false) UserProfileResponse expectedResult
     ) {
         TimeRange domainTimeRange = domainTimeRange(timeRangeStr);
         UserProfile userProfile = userProfileService.getProfile(cookie, domainTimeRange, limit);
         UserProfileResponse response = UserProfileResponse.of(userProfile);
 
-        return ResponseEntity.ok(Objects.requireNonNullElse(expectedResult, response));
+        return ResponseEntity.ok(response);
     }
 
     private TimeRange domainTimeRange(String timeRangeStr) {
