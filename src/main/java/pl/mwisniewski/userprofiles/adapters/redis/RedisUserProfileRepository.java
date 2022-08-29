@@ -34,6 +34,8 @@ public class RedisUserProfileRepository implements UserProfileProvider {
         List<RedisUserTag> buyUserTags = template.opsForList().range(buyKey, 0, -1);
         List<RedisUserTag> viewUserTags = template.opsForList().range(viewKey, 0, -1);
 
+        logger.info("buyUserTags {}", buyUserTags);
+
         buyUserTags = filterAndSort(buyUserTags, timeRange, limit);
         viewUserTags = filterAndSort(viewUserTags, timeRange, limit);
 
