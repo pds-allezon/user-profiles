@@ -8,9 +8,12 @@ import pl.mwisniewski.userprofiles.adapters.redis.RedisUserProfileRepository;
 import pl.mwisniewski.userprofiles.domain.UserProfileService;
 import pl.mwisniewski.userprofiles.domain.model.TimeRange;
 import pl.mwisniewski.userprofiles.domain.model.UserProfile;
+import pl.mwisniewski.userprofiles.domain.model.UserTag;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @RestController
 public class UserProfilesEndpoint {
@@ -32,7 +35,7 @@ public class UserProfilesEndpoint {
         UserProfileResponse response = UserProfileResponse.of(userProfile);
 
         if (!response.equals(expectedResult)) {
-            logger.debug("Expected result: {} is different than actual: {}", expectedResult, response);
+            logDifferentAnswers(response, expectedResult);
         }
 
         return ResponseEntity.ok(response);
@@ -44,6 +47,24 @@ public class UserProfilesEndpoint {
         String endTimeRange = splitTimeRange[1] + DEFAULT_TIMEZONE_SUFFIX;
 
         return new TimeRange(startTimeRange, endTimeRange);
+    }
+
+    private void logDifferentAnswers(UserProfileResponse actualResponse, UserProfileResponse expectedResponse) {
+        if (expectedResponse == null) {
+            return;
+        }
+
+        Set<UserTagResponse> actualBuySet = new HashSet<>(actualResponse.buys());
+        Set<UserTagResponse> actualViewSet = new HashSet<>(actualResponse.views());
+
+        Set<UserTagResponse> expectedBuySet = new HashSet<>(expectedResponse.buys());
+        Set<UserTagResponse> expectedViewSet = new HashSet<>(expectedResponse.views());
+
+        logger.warn("Different answers!");
+        logger.warn("Set difference: actual.buys - expected.buys: {}", actualBuySet.removeAll(expectedBuySet));
+        logger.warn("Set difference: actual.views - expected.views: {}", actualViewSet.removeAll(expectedViewSet));
+        logger.warn("Set difference: expected.buys - actual.buys: {}", expectedBuySet.removeAll(actualBuySet));
+        logger.warn("Set difference: expected.views - actual.views: {}", expectedViewSet.removeAll(actualViewSet));
     }
 
     private static final String DEFAULT_TIMEZONE_SUFFIX = "Z";
