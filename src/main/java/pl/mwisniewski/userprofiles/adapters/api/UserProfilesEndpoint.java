@@ -72,6 +72,10 @@ public class UserProfilesEndpoint {
         logger.warn("Set difference: actual.views - expected.views: {}", actualViewSet);
         logger.warn("Set difference: expected.buys - actual.buys: {}", expectedBuySet);
         logger.warn("Set difference: expected.views - actual.views: {}", expectedViewSet);
+
+        logger.warn("Full diff");
+        logger.warn("Actual: {}", actualResponse);
+        logger.warn("Expected: {}", expectedResponse);
     }
 
     private static final String DEFAULT_TIMEZONE_SUFFIX = "Z";
