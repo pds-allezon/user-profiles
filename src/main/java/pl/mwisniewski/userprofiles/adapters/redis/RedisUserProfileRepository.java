@@ -46,7 +46,7 @@ public class RedisUserProfileRepository implements UserProfileProvider {
 
     @Override
     public void addUserTag(UserTag userTag) {
-        logger.info("Adding user tag to redis: {}", userTag);
+        logger.debug("Adding user tag to redis: {}", userTag);
 
         String key = makeKey(userTag.cookie(), userTag.action().toString());
         template.opsForList().leftPush(key, RedisUserTag.of(userTag));

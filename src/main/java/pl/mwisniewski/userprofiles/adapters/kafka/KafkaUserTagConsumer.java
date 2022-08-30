@@ -20,7 +20,7 @@ public class KafkaUserTagConsumer {
 
     @KafkaListener(topics = "user-tags", groupId = "user-profiles")
     void consume(UserTag userTag) {
-        logger.info("Consuming user tag: {}", userTag);
+        logger.debug("Consuming user tag: {}", userTag);
         userProfileService.addUserTag(userTag);
     }
 

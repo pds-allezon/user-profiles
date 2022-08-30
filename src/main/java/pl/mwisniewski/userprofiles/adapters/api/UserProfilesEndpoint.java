@@ -1,7 +1,10 @@
 package pl.mwisniewski.userprofiles.adapters.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.mwisniewski.userprofiles.adapters.redis.RedisUserProfileRepository;
 import pl.mwisniewski.userprofiles.domain.UserProfileService;
 import pl.mwisniewski.userprofiles.domain.model.TimeRange;
 import pl.mwisniewski.userprofiles.domain.model.UserProfile;
@@ -28,6 +31,10 @@ public class UserProfilesEndpoint {
         UserProfile userProfile = userProfileService.getProfile(cookie, domainTimeRange, limit);
         UserProfileResponse response = UserProfileResponse.of(userProfile);
 
+        if (!response.equals(expectedResult)) {
+            logger.warn("Expected result: {} is different than actual: {}", expectedResult, response);
+        }
+
         return ResponseEntity.ok(response);
     }
 
@@ -40,4 +47,5 @@ public class UserProfilesEndpoint {
     }
 
     private static final String DEFAULT_TIMEZONE_SUFFIX = "Z";
+    private final Logger logger = LoggerFactory.getLogger(UserProfilesEndpoint.class);
 }
