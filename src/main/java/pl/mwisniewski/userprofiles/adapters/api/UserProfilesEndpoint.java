@@ -32,7 +32,7 @@ public class UserProfilesEndpoint {
         UserProfileResponse response = UserProfileResponse.of(userProfile);
 
         if (!response.equals(expectedResult)) {
-            logger.warn("Expected result: {} is different than actual: {}", expectedResult, response);
+            logger.debug("Expected result: {} is different than actual: {}", expectedResult, response);
         }
 
         return ResponseEntity.ok(response);
