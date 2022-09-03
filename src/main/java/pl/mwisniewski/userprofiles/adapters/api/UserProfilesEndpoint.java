@@ -4,16 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.mwisniewski.userprofiles.adapters.redis.RedisUserProfileRepository;
 import pl.mwisniewski.userprofiles.domain.UserProfileService;
 import pl.mwisniewski.userprofiles.domain.model.TimeRange;
 import pl.mwisniewski.userprofiles.domain.model.UserProfile;
-import pl.mwisniewski.userprofiles.domain.model.UserTag;
-
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 @RestController
 public class UserProfilesEndpoint {
