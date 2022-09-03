@@ -62,10 +62,17 @@ public class RedisUserProfileRepository implements UserProfileProvider {
                 .filter(it ->
                         it.time().compareTo(timeRange.startTime()) >= 0 && it.time().compareTo(timeRange.endTime()) < 0
                 )
-                .sorted(Comparator.comparing(RedisUserTag::time).reversed())
+                .sorted(new CustomUserTagComparator())
                 .limit(limit)
                 .toList();
     }
 
     private final Logger logger = LoggerFactory.getLogger(RedisUserProfileRepository.class);
+
+    private static class CustomUserTagComparator implements Comparator<RedisUserTag> {
+        public int compare(RedisUserTag tag1, RedisUserTag tag2) {
+            return -1 * tag1.time().substring(0, tag1.time().length() - 1)
+                    .compareTo(tag2.time().substring(0, tag2.time().length() - 1));
+        }
+    }
 }
