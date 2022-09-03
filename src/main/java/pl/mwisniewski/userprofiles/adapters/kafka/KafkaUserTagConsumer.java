@@ -11,8 +11,7 @@ import pl.mwisniewski.userprofiles.domain.model.UserTag;
 @Component
 @Profile("prod")
 public class KafkaUserTagConsumer {
-    final
-    UserProfileService userProfileService;
+    final UserProfileService userProfileService;
 
     public KafkaUserTagConsumer(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;

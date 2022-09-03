@@ -54,28 +54,9 @@ public class UserProfilesEndpoint {
             return;
         }
 
-        Set<UserTagResponse> actualBuySet = new HashSet<>(actualResponse.buys());
-        Set<UserTagResponse> actualViewSet = new HashSet<>(actualResponse.views());
-
-        Set<UserTagResponse> expectedBuySet = new HashSet<>(expectedResponse.buys());
-        Set<UserTagResponse> expectedBuySet2 = new HashSet<>(expectedResponse.buys());
-        Set<UserTagResponse> expectedViewSet = new HashSet<>(expectedResponse.views());
-        Set<UserTagResponse> expectedViewSet2 = new HashSet<>(expectedResponse.views());
-
-        expectedBuySet.removeAll(actualBuySet);
-        expectedViewSet.removeAll(actualViewSet);
-        actualBuySet.removeAll(expectedBuySet2);
-        actualViewSet.removeAll(expectedViewSet2);
-
-        logger.debug("Different answers!");
-        logger.debug("Set difference: actual.buys - expected.buys: {}", actualBuySet);
-        logger.debug("Set difference: actual.views - expected.views: {}", actualViewSet);
-        logger.debug("Set difference: expected.buys - actual.buys: {}", expectedBuySet);
-        logger.debug("Set difference: expected.views - actual.views: {}", expectedViewSet);
-
-        logger.debug("Full diff");
-        logger.debug("Actual: {}", actualResponse);
-        logger.debug("Expected: {}", expectedResponse);
+        logger.warn("Full diff");
+        logger.warn("Actual: {}", actualResponse);
+        logger.warn("Expected: {}", expectedResponse);
     }
 
     private static final String DEFAULT_TIMEZONE_SUFFIX = "Z";
