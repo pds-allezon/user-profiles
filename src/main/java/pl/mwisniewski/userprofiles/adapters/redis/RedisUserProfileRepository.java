@@ -58,15 +58,15 @@ public class RedisUserProfileRepository implements UserProfileProvider {
     }
 
     private List<RedisUserTag> filterAndSort(List<RedisUserTag> userTagList, TimeRange timeRange, int limit) {
-        Comparator<String> customTimeComparator = new CustomTimeComparator().reversed();
-        Comparator<RedisUserTag> customUserTagComparator = new CustomUserTagComparator().reversed();
+        Comparator<String> customTimeComparator = new CustomTimeComparator();
+        Comparator<RedisUserTag> customUserTagComparator = new CustomUserTagComparator();
 
         return userTagList.stream()
                 .filter(it ->
                         customTimeComparator.compare(it.time(), timeRange.startTime()) >= 0 &&
                                 customTimeComparator.compare(it.time(), timeRange.endTime()) < 0
                 )
-                .sorted(customUserTagComparator)
+                .sorted(customUserTagComparator.reversed())
                 .limit(limit)
                 .toList();
     }
