@@ -56,7 +56,14 @@ public class UserProfileService {
     private static class CustomTimeComparator implements Comparator<String> {
         @Override
         public int compare(String o1, String o2) {
-            return o1.substring(0, o1.length() - 1).compareTo(o2.substring(0, o2.length() - 1));
+            if (o1.length() < o2.length()) {
+                o1 = String.format("%s:000Z", o1.substring(0, o1.length() - 1));
+            }
+            else if (o2.length() < o1.length()) {
+                o2 = String.format("%s:000Z", o2.substring(0, o2.length() - 1));
+            }
+
+            return o1.compareTo(o2);
         }
     }
 }
