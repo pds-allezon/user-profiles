@@ -54,9 +54,9 @@ public class UserProfilesEndpoint {
             return;
         }
 
-        logger.warn("Full diff");
-        logger.warn("Actual: {}", actualResponse);
-        logger.warn("Expected: {}", expectedResponse);
+        logger.debug("Full diff");
+        logger.debug("Actual: {}", actualResponse);
+        logger.debug("Expected: {}", expectedResponse);
     }
 
     private static final String DEFAULT_TIMEZONE_SUFFIX = "Z";
