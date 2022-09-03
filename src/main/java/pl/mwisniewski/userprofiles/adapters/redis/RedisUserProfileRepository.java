@@ -58,11 +58,15 @@ public class RedisUserProfileRepository implements UserProfileProvider {
     }
 
     private List<RedisUserTag> filterAndSort(List<RedisUserTag> userTagList, TimeRange timeRange, int limit) {
+        Comparator<String> customTimeComparator = new CustomTimeComparator();
+        Comparator<RedisUserTag> customUserTagComparator = new CustomUserTagComparator();
+
         return userTagList.stream()
                 .filter(it ->
-                        it.time().compareTo(timeRange.startTime()) >= 0 && it.time().compareTo(timeRange.endTime()) < 0
+                        customTimeComparator.compare(it.time(), timeRange.startTime()) >= 0 &&
+                                customTimeComparator.compare(it.time(), timeRange.endTime()) < 0
                 )
-                .sorted(new CustomUserTagComparator())
+                .sorted(customUserTagComparator)
                 .limit(limit)
                 .toList();
     }
@@ -71,8 +75,15 @@ public class RedisUserProfileRepository implements UserProfileProvider {
 
     private static class CustomUserTagComparator implements Comparator<RedisUserTag> {
         public int compare(RedisUserTag tag1, RedisUserTag tag2) {
-            return -1 * tag1.time().substring(0, tag1.time().length() - 1)
-                    .compareTo(tag2.time().substring(0, tag2.time().length() - 1));
+            Comparator<String> timeComparator = new CustomTimeComparator();
+            return timeComparator.compare(tag1.time(), tag2.time());
+        }
+    }
+
+    private static class CustomTimeComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            return o1.substring(0, o1.length() - 1).compareTo(o2.substring(0, o2.length() - 1));
         }
     }
 }
