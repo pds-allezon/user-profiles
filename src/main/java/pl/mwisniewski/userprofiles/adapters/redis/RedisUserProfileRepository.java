@@ -16,26 +16,33 @@ import java.util.List;
 public class RedisUserProfileRepository implements UserProfileRepository {
     private static final int MAX_USER_TAGS_NUMBER = 200;
 
-    private final RedisTemplate<String, RedisUserTag> template;
+    private final RedisTemplate<String, String> template;
 
-    public RedisUserProfileRepository(RedisTemplate<String, RedisUserTag> template) {
+    private final UserTagCompressor compressor;
+
+    public RedisUserProfileRepository(RedisTemplate<String, String> template) {
         this.template = template;
+        this.compressor = new UserTagCompressor();
     }
 
     @Override
     public List<UserTag> getBuys(String cookie) {
         String buyKey = makeKey(cookie, Action.BUY.toString());
-        List<RedisUserTag> buyUserTags = template.opsForList().range(buyKey, 0, -1);
+        List<String> buyUserTags = template.opsForList().range(buyKey, 0, -1);
 
-        return buyUserTags.stream().map(RedisUserTag::toDomain).toList();
+        return buyUserTags.stream().map(it ->
+                compressor.decompress(cookie, Action.BUY, it)
+        ).toList();
     }
 
     @Override
     public List<UserTag> getViews(String cookie) {
         String viewKey = makeKey(cookie, Action.VIEW.toString());
-        List<RedisUserTag> viewUserTags = template.opsForList().range(viewKey, 0, -1);
+        List<String> viewUserTags = template.opsForList().range(viewKey, 0, -1);
 
-        return viewUserTags.stream().map(RedisUserTag::toDomain).toList();
+        return viewUserTags.stream().map(it ->
+                compressor.decompress(cookie, Action.VIEW, it)
+        ).toList();
     }
 
     @Override
@@ -43,7 +50,7 @@ public class RedisUserProfileRepository implements UserProfileRepository {
         logger.debug("Adding user tag to redis: {}", userTag);
 
         String key = makeKey(userTag.cookie(), userTag.action().toString());
-        template.opsForList().leftPush(key, RedisUserTag.of(userTag));
+        template.opsForList().leftPush(key, compressor.compress(userTag));
         template.opsForList().trim(key, 0, MAX_USER_TAGS_NUMBER - 1);
     }
 
